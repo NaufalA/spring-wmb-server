@@ -2,6 +2,8 @@ package com.warungmakanbahari.warungmakanbahari.shared.dtos;
 
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public class PagedResponse<T> {
     private Integer page;
     private Integer size;
@@ -20,6 +22,15 @@ public class PagedResponse<T> {
         this.totalCount = pagedResult.getTotalElements();
         this.totalPage = pagedResult.getTotalPages();
         this.data = pagedResult.getContent();
+    }
+
+    public PagedResponse(Page pagedResult, List<T> transformedData) {
+        this.page = pagedResult.getNumber();
+        this.size = pagedResult.getSize();
+        this.count = pagedResult.getNumberOfElements();
+        this.totalCount = pagedResult.getTotalElements();
+        this.totalPage = pagedResult.getTotalPages();
+        this.data = transformedData;
     }
 
     public Integer getPage() {

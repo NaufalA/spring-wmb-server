@@ -4,7 +4,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.time.Instant;
 
 @MappedSuperclass
 public class NumberBaseEntity {
@@ -13,16 +13,16 @@ public class NumberBaseEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @CreatedDate
     @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    @CreatedDate
+    private Instant createdAt = Instant.now();
 
-    @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
-    private Date updatedAt;
+    @LastModifiedDate
+    private Instant updatedAt = Instant.now();
 
     @Column(name = "deleted_at")
-    private Date deletedAt;
+    private Instant deletedAt;
 
     public Long getId() {
         return id;
@@ -32,27 +32,27 @@ public class NumberBaseEntity {
         this.id = id;
     }
 
-    public Date getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public Instant getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    public Date getDeletedAt() {
+    public Instant getDeletedAt() {
         return deletedAt;
     }
 
-    public void setDeletedAt(Date deletedAt) {
+    public void setDeletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
     }
 }
