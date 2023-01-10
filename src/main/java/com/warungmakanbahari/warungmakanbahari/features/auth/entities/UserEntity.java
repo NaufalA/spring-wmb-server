@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
-public class User extends NumberBaseEntity {
+public class UserEntity extends NumberBaseEntity {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
@@ -15,13 +15,13 @@ public class User extends NumberBaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_role_id")
-    private UserRole userRole;
+    private UserRoleEntity userRole;
 
-    public UserRole getUserRole() {
+    public UserRoleEntity getUserRole() {
         return userRole;
     }
 
-    public void setUserRole(UserRole userRole) {
+    public void setUserRole(UserRoleEntity userRole) {
         this.userRole = userRole;
     }
 

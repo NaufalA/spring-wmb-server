@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "menu_prices")
-public class MenuPrice extends NumberBaseEntity {
+public class MenuPriceEntity extends NumberBaseEntity {
     @Column(name = "unit_price", nullable = false)
     private Float unitPrice;
 
@@ -15,9 +15,9 @@ public class MenuPrice extends NumberBaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "menu_id", nullable = false)
-    private Menu menu;
+    private MenuEntity menu;
 
-    public MenuPrice() {
+    public MenuPriceEntity() {
         isActive = true;
     }
 
@@ -37,11 +37,11 @@ public class MenuPrice extends NumberBaseEntity {
         isActive = active;
     }
 
-    public Menu getMenu() {
+    public MenuEntity getMenu() {
         return menu;
     }
 
-    public void setMenu(Menu menu) {
+    public void setMenu(MenuEntity menu) {
         this.menu = menu;
     }
 }

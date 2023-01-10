@@ -5,7 +5,7 @@ import com.warungmakanbahari.warungmakanbahari.features.auth.UserRepository;
 import com.warungmakanbahari.warungmakanbahari.features.auth.dtos.JwtPayload;
 import com.warungmakanbahari.warungmakanbahari.features.auth.dtos.LoginRequestDto;
 import com.warungmakanbahari.warungmakanbahari.features.auth.dtos.LoginResponseDto;
-import com.warungmakanbahari.warungmakanbahari.features.auth.entities.User;
+import com.warungmakanbahari.warungmakanbahari.features.auth.entities.UserEntity;
 import com.warungmakanbahari.warungmakanbahari.shared.exceptions.UnauthorizedException;
 import com.warungmakanbahari.warungmakanbahari.shared.utils.JwtUtility;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public LoginResponseDto login(LoginRequestDto loginDto) {
-        Optional<User> user = userRepository.findByEmail(loginDto.getEmail());
+        Optional<UserEntity> user = userRepository.findByEmail(loginDto.getEmail());
 
         if (user.isEmpty() || !Objects.equals(user.get().getPassword(), loginDto.getPassword())) {
             throw new UnauthorizedException("Wrong Username or Password");

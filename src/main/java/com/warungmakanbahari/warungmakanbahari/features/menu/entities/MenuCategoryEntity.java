@@ -11,18 +11,18 @@ import java.util.List;
 
 @Entity
 @Table(name = "menu_categories")
-public class MenuCategory extends NumberBaseEntity {
+public class MenuCategoryEntity extends NumberBaseEntity {
     @Column(name = "name", nullable = false, unique = true, length = 100)
     private String name;
 
     @OneToMany(mappedBy = "menuCategory", orphanRemoval = true)
-    private List<Menu> menus = new ArrayList<>();
+    private List<MenuEntity> menus = new ArrayList<>();
 
-    public List<Menu> getMenus() {
+    public List<MenuEntity> getMenus() {
         return menus;
     }
 
-    public void setMenus(List<Menu> menus) {
+    public void setMenus(List<MenuEntity> menus) {
         this.menus = menus;
     }
 
