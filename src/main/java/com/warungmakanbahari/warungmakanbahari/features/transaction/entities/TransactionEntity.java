@@ -21,7 +21,7 @@ public class TransactionEntity extends NumberBaseEntity {
     @JoinColumn(name = "table_id", nullable = false)
     private TableEntity table;
 
-    @OneToMany(mappedBy = "transaction", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL)
     private List<TransactionDetailEntity> transactionDetails;
 
     public Instant getTransactionDate() {

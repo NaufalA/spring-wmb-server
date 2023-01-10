@@ -64,6 +64,9 @@ public class TransactionServiceImpl implements TransactionService {
         TableEntity table = tableService.getById(addTransactionDto.getTableId());
         transaction.setTable(table);
 
+        transaction = transactionRepository.save(transaction);
+
+        TransactionEntity finalTransaction = transaction;
         List<TransactionDetailEntity> transactionDetails = addTransactionDto.getDetailList()
                 .stream()
                 .map(detail -> {
@@ -71,6 +74,7 @@ public class TransactionServiceImpl implements TransactionService {
                     transactionDetail.setQuantity(detail.getQuantity());
                     MenuPriceEntity price = menuService.getPriceById(detail.getMenuPriceId());
                     transactionDetail.setMenuPrice(price);
+                    transactionDetail.setTransaction(finalTransaction);
 
                     return transactionDetail;
                 }).collect(Collectors.toList());
@@ -78,8 +82,9 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setTransactionDetails(transactionDetails);
 
         transaction = transactionRepository.save(transaction);
+        transaction.setTransactionDetails(transaction.getTransactionDetails());
 
-        return mapToDto(transaction, true);
+        return mapToDto(transaction, false);
     }
 
     public PagedResponse<TransactionDto> getAll(Integer page, Integer size) {
