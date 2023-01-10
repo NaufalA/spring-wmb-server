@@ -4,6 +4,7 @@ import com.warungmakanbahari.warungmakanbahari.features.table.TableService;
 import com.warungmakanbahari.warungmakanbahari.features.table.dtos.AddTableRequestDto;
 import com.warungmakanbahari.warungmakanbahari.features.table.entities.TableEntity;
 import com.warungmakanbahari.warungmakanbahari.features.table.repositories.TableRepository;
+import com.warungmakanbahari.warungmakanbahari.shared.classes.SearchCriteria;
 import com.warungmakanbahari.warungmakanbahari.shared.dtos.PagedResponse;
 import com.warungmakanbahari.warungmakanbahari.shared.exceptions.NotFoundException;
 import org.modelmapper.ModelMapper;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,6 +44,11 @@ public class TableServiceImpl implements TableService {
         Page<TableEntity> tablePage = tableRepository.findAll(pageable);
 
         return new PagedResponse<>(tablePage);
+    }
+
+    @Override
+    public PagedResponse<TableEntity> getAll(Integer page, Integer size, List<SearchCriteria> criteria) {
+        throw new RuntimeException("Unimplemented");
     }
 
     public TableEntity getById(Long id) {

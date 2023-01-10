@@ -3,12 +3,14 @@ package com.warungmakanbahari.warungmakanbahari.features.menu.dtos;
 public class MenuResponseDto {
     private Long id;
     private String name;
+    private Long priceId;
     private Float unitPrice;
     private MenuCategoryDto menuCategory;
 
-    public MenuResponseDto(Long id, String name, Float unitPrice, MenuCategoryDto menuCategory) {
+    public MenuResponseDto(Long id, String name, Long priceId, Float unitPrice, MenuCategoryDto menuCategory) {
         this.id = id;
         this.name = name;
+        this.priceId = priceId;
         this.unitPrice = unitPrice;
         this.menuCategory = menuCategory;
     }
@@ -27,6 +29,14 @@ public class MenuResponseDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getPriceId() {
+        return priceId;
+    }
+
+    public void setPriceId(Long priceId) {
+        this.priceId = priceId;
     }
 
     public Float getUnitPrice() {

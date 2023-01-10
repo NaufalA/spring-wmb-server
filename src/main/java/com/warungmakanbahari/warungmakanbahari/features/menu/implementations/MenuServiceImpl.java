@@ -76,7 +76,7 @@ public class MenuServiceImpl implements MenuService {
         return mapToDto(menu, menuPrice);
     }
 
-    public PagedResponse<MenuResponseDto> getAll(Integer page, Integer size) {
+    public PagedResponse<MenuResponseDto> getAll(Integer page, Integer size, List<SearchCriteria> criteria) {
         Pageable pageable;
         if (size <= 0) {
             pageable = Pageable.unpaged();
@@ -84,7 +84,14 @@ public class MenuServiceImpl implements MenuService {
             pageable = PageRequest.of(page, size);
         }
 
-        Page<MenuEntity> menuPage = menuRepository.findAll(pageable);
+        Page<MenuEntity> menuPage;
+        if (criteria.size() > 0) {
+            Specification<MenuEntity> specs =
+                    new GenericSpecificationBuilder<MenuEntity>().build(criteria, this::menuCriteriaPath);
+            menuPage = menuRepository.findAll(specs, pageable);
+        } else {
+            menuPage = menuRepository.findAll(pageable);
+        }
 
         List<MenuResponseDto> menuResponses = menuPage.get().map(this::mapToDto).collect(Collectors.toList());
 
@@ -99,6 +106,11 @@ public class MenuServiceImpl implements MenuService {
         }
 
         return mapToDto(menu.get());
+    }
+
+    @Override
+    public PagedResponse<MenuResponseDto> getAll(Integer page, Integer size) {
+        throw new RuntimeException("Unimplemented");
     }
 
     public Long delete(Long id) {
@@ -118,6 +130,7 @@ public class MenuServiceImpl implements MenuService {
         return new MenuResponseDto(
                 menu.getId(),
                 menu.getName(),
+                activePrice.getId(),
                 activePrice.getUnitPrice(),
                 modelMapper.map(menu.getMenuCategory(), MenuCategoryDto.class)
         );
@@ -127,6 +140,7 @@ public class MenuServiceImpl implements MenuService {
         return new MenuResponseDto(
                 menu.getId(),
                 menu.getName(),
+                activePrice.getId(),
                 activePrice.getUnitPrice(),
                 modelMapper.map(menu.getMenuCategory(), MenuCategoryDto.class)
         );
@@ -138,7 +152,7 @@ public class MenuServiceImpl implements MenuService {
                         new SearchCriteria("menuId", menuId, QueryOperator.EQUALS, SearchOperation.AND),
                         new SearchCriteria("isActive", true, QueryOperator.EQUALS, SearchOperation.AND)
                 ),
-                this::criteriaPath
+                this::priceCriteriaPath
         );
 
         Optional<MenuPriceEntity> activePrice = priceRepository.findOne(specs);
@@ -150,15 +164,46 @@ public class MenuServiceImpl implements MenuService {
         return activePrice.get();
     }
 
-    private Path<String> criteriaPath(Root<MenuPriceEntity> root, SearchCriteria criteria) {
-        if (criteria.getField().equals("menuId")) {
-            return menuJoin(root).get("id");
+    private Path<String> menuCriteriaPath(Root<MenuEntity> root, SearchCriteria criteria) {
+        if (criteria.getField().equals("categoryId")) {
+            return menuJoinCategory(root).get("id");
         }
 
         return root.get(criteria.getField());
     }
 
-    private Join<MenuPriceEntity, MenuEntity> menuJoin(Root<MenuPriceEntity> root) {
+    private Join<MenuEntity, MenuCategoryEntity> menuJoinCategory(Root<MenuEntity> root) {
+        return root.join("menuCategory");
+    }
+
+    private Path<String> priceCriteriaPath(Root<MenuPriceEntity> root, SearchCriteria criteria) {
+        if (criteria.getField().equals("menuId")) {
+            return priceJoinMenu(root).get("id");
+        }
+
+        return root.get(criteria.getField());
+    }
+
+    private Join<MenuPriceEntity, MenuEntity> priceJoinMenu(Root<MenuPriceEntity> root) {
         return root.join("menu");
+    }
+
+    @Override
+    public List<MenuCategoryDto> getCategories() {
+        return categoryRepository.findAll().stream().map(category -> new MenuCategoryDto(
+                category.getId(),
+                category.getName()
+        )).collect(Collectors.toList());
+    }
+
+    @Override
+    public MenuPriceEntity getPriceById(Long id) {
+        Optional<MenuPriceEntity> price = priceRepository.findById(id);
+
+        if (price.isEmpty()) {
+            throw new NotFoundException("Menu Data Not Found");
+        }
+
+        return price.get();
     }
 }

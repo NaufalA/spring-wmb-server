@@ -1,7 +1,10 @@
 package com.warungmakanbahari.warungmakanbahari.features.menu;
 
 import com.warungmakanbahari.warungmakanbahari.features.menu.dtos.AddMenuRequestDto;
+import com.warungmakanbahari.warungmakanbahari.features.menu.dtos.MenuCategoryDto;
 import com.warungmakanbahari.warungmakanbahari.features.menu.dtos.MenuResponseDto;
+import com.warungmakanbahari.warungmakanbahari.shared.classes.SearchCriteria;
+import com.warungmakanbahari.warungmakanbahari.shared.constants.QueryOperator;
 import com.warungmakanbahari.warungmakanbahari.shared.constants.UrlMapping;
 import com.warungmakanbahari.warungmakanbahari.shared.dtos.CommonResponse;
 import com.warungmakanbahari.warungmakanbahari.shared.dtos.PagedResponse;
@@ -9,6 +12,9 @@ import com.warungmakanbahari.warungmakanbahari.shared.dtos.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(UrlMapping.MENU_URL)
@@ -33,9 +39,16 @@ public class MenuController {
     @GetMapping
     public ResponseEntity<CommonResponse> getAll(
             @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "size", defaultValue = "10") Integer size
+            @RequestParam(value = "size", defaultValue = "10") Integer size,
+            @RequestParam(value = "categoryId", required = false) Long categoryId
     ) {
-        PagedResponse<MenuResponseDto> response = menuService.getAll(page, size);
+        PagedResponse<MenuResponseDto> response;
+
+        List<SearchCriteria> criteria = new ArrayList<>();
+        if (categoryId != null) {
+            criteria.add(new SearchCriteria("categoryId", categoryId, QueryOperator.EQUALS));
+        }
+        response = menuService.getAll(page, size, criteria);
 
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse<>(
                 String.valueOf(HttpStatus.OK),
@@ -62,6 +75,17 @@ public class MenuController {
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse<>(
                 String.valueOf(HttpStatus.OK),
                 "Success Delete Menu",
+                response
+        ));
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<CommonResponse> getCategories() {
+        List<MenuCategoryDto> response = menuService.getCategories();
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse<>(
+                String.valueOf(HttpStatus.OK),
+                "Success Get All Menu Category",
                 response
         ));
     }
